@@ -1,31 +1,34 @@
 import { RequestHandler } from "express";
 import notesModel from "../models/note";
 
-export const getNotes: RequestHandler = async (req, res) => {
+//app.get is ROUTE handler, the callback is middleware
+export const getNotes: RequestHandler = async (req, res, next) => {
   try {
-    //append .exec to return a promise
     const notes = await notesModel.find();
-    //sending notes in json format
-    //successful request
     res.status(200).json(notes);
-  } catch (err) {
-    //err is an object with message property
-    //adding as Error for ts
-    //server error
-    res.status(500).json((err as Error).message);
+  } catch (error) {
+    next(error);
   }
 };
 
-export const createNote: RequestHandler = async (req, res) => {
+export const getNote: RequestHandler = async (req, res, next) => {
+  const { noteId } = req.params;
   try {
-    const { title, text } = req.body;
+    const note = await notesModel.findById(noteId);
+    res.status(200).json(note);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createNote: RequestHandler = async (req, res, next) => {
+  const { title, text } = req.body;
+  try {
     //object short hand notation
     const newNote = await notesModel.create({ title, text });
-    console.log(title, text);
-    //new resources created
     res.status(201).json(newNote);
-  } catch (err) {
+  } catch (error) {
     //client error
-    res.status(400).json((err as Error).message);
+    next(error);
   }
 };
