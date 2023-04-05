@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import { Note as NoteModel } from "./models/note";
+import axios from "axios";
+import Note from "./components/note/Note";
+import { Container, Row, Col } from "react-bootstrap";
 
-function App() {
+const App = () => {
+  //specifies that notes is an array of NoteModel objects
+  const [notes, setNotes] = useState<NoteModel[]>([]);
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const response = await axios.get("http://localhost:8888/api/notes");
+        const { data } = response;
+        console.log(data);
+        setNotes(data);
+      } catch (error) {
+        console.error(error);
+        alert(error);
+      }
+    };
+    loadNotes();
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* bootstrap grid system, uses flexbox */}
+      <Container>
+        {/* how many rows based on screen size */}
+        {/* default bootstrap class for spacing */}
+        <Row xs={1} md={2} xl={3} className="g-4">
+          {notes.map((note) => {
+            return <Col key={note._id}>
+               <Note note={note} key={note._id} />
+            </Col>;
+          })}
+        </Row>
+      </Container>
     </div>
   );
-}
-
+};
 export default App;

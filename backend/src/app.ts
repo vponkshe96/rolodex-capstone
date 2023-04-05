@@ -1,4 +1,5 @@
 import "dotenv/config";
+import cors from "cors";
 import morgan from "morgan";
 import express, { NextFunction, Request, Response } from "express";
 import notesRoutes from "./routes/notes";
@@ -7,6 +8,7 @@ import createError, { isHttpError } from "http-errors";
 const app = express();
 
 //good to log request info in production
+app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use("/api/notes", notesRoutes);

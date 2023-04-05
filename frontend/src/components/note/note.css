@@ -1,0 +1,8 @@
+.noteCard {
+  background-color: cornsilk;
+}
+
+.cardText {
+  /* for multline text to be displayed properly,otherwise everything will be on one line */
+  white-space: pre-line;
+}
